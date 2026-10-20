@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Conditions{% endblock %}
+
+{% block content %}
+<div class="wrap">
+    <div class="page-head">
+        <h1>Conditions we detect</h1>
+        <p>What each finding means and what to do next.</p>
+    </div>
+
+    <div style="display:grid; gap:20px; padding-bottom:56px;">
+        {% for key, c in conditions.items() %}
+        <article class="card" id="{{ c.slug }}" style="display:grid; grid-template-columns: minmax(0, 260px) 1fr; overflow:hidden;" >
+            <img src="{{ url_for('static', filename='images/' + c.image) }}" alt="{{ c.title }} example" loading="lazy" style="width:100%; height:100%; min-height:180px; object-fit:cover; background:#000;">
+            <div class="pad">
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
+                    <span class="dot {{ c.slug }}"></span>
+                    <h2 style="margin:0; font-size:1.3rem;">{{ c.title }}</h2>
+                    <span class="badge {{ c.severity }}">{{ c.severity }} priority</span>
+                </div>
+                <p>{{ c.description }}</p>
+                <p class="muted" style="margin-bottom:0;"><strong style="color:var(--text)">What to do:</strong> {{ c.advice }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    @media (max-width: 640px) {
+        article.card { grid-template-columns: 1fr !important; }
+    }
+</style>
+{% endblock %}

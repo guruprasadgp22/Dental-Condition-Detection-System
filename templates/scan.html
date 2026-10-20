@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Scan X-ray{% endblock %}
+{% block auth %}required{% endblock %}
+
+{% block content %}
+<div class="wrap">
+    <div class="page-head">
+        <h1>Scan an X-ray</h1>
+        <p>Upload a panoramic dental X-ray to detect caries, deep caries, impacted teeth and peripheral lesions.</p>
+    </div>
+
+    <div class="scan-layout">
+        <!-- Left: input -->
+        <aside style="display:grid; gap:20px;">
+            <div class="card pad">
+                <input type="file" id="file-input" accept="image/jpeg,image/png" hidden>
+
+                <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose an X-ray image">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M20 16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3"/></svg>
+                    <strong>Drop X-ray here or click to browse</strong>
+                    <span>JPG or PNG, up to 10 MB. You can also paste an image.</span>
+                </div>
+
+                <div id="preview-wrap" hidden>
+                    <div class="preview">
+                        <img id="preview" alt="Selected X-ray">
+                        <button type="button" class="remove" id="remove-btn">Remove</button>
+                    </div>
+                    <p class="file-meta" id="file-meta"></p>
+                </div>
+
+                <div class="control">
+                    <div class="control-row">
+                        <label for="confidence">Minimum confidence</label>
+                        <span id="conf-value">25%</span>
+                    </div>
+                    <input type="range" id="confidence" min="0.05" max="0.9" step="0.05" value="0.25">
+                    <small>Lower shows more possible findings, but may include false positives.</small>
+                </div>
+
+                <div id="input-error" class="alert alert-error" hidden style="margin-bottom:14px;"></div>
+
+                <button type="button" class="btn btn-primary btn-block btn-lg" id="analyze-btn" disabled>
+                    Analyse X-ray
+                </button>
+                <button type="button" class="btn btn-ghost btn-block" id="sample-btn" style="margin-top:8px;">
+                    No X-ray handy? Try a sample
+                </button>
+            </div>
+
+            <div class="card pad">
+                <div class="panel-title">
+                    <span>Recent scans</span>
+                    <button type="button" class="link-btn" id="clear-history" hidden>Clear</button>
+                </div>
+                <ul class="history" id="history"></ul>
+                <p class="muted" id="history-empty" style="margin:0; font-size:.9rem;">Your recent scans will appear here.</p>
+            </div>
+        </aside>
+
+        <!-- Right: output -->
+        <section class="card pad" id="output" aria-live="polite">
+            <div class="empty-state" id="state-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>
+                <h3>No results yet</h3>
+                <p>Choose an X-ray on the left and click <b>Analyse X-ray</b>.</p>
+            </div>
+
+            <div class="analyzing" id="state-loading" hidden>
+                <span class="spinner"></span>
+                <h3>Analysing your X-ray…</h3>
+                <p class="muted">This usually takes a few seconds.</p>
+            </div>
+
+            <div id="state-result" hidden>
+                <div class="stats">
+                    <div class="stat"><b id="stat-total">0</b><span>findings</span></div>
+                    <div class="stat" id="stat-priority-box"><b id="stat-priority">—</b><span>highest priority</span></div>
+                    <div class="stat"><b id="stat-time">—</b><span>analysis time</span></div>
+                </div>
+
+                <div class="viewer-bar" id="chips"></div>
+
+                <div class="viewer" id="viewer">
+                    <img id="result-img" alt="Analysed X-ray">
+                    <svg id="overlay" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg>
+                </div>
+
+                <div class="viewer-bar" style="margin-top:12px;">
+                    <label class="switch"><input type="checkbox" id="toggle-boxes" checked> Boxes</label>
+                    <label class="switch" style="margin-left:0;"><input type="checkbox" id="toggle-labels" checked> Labels</label>
+                </div>
+
+                <div class="findings" id="findings"></div>
+
+                <div class="result-actions">
+                    <a class="btn btn-primary" id="report-link" href="#" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+                        Open report
+                    </a>
+                    <a class="btn btn-outline" id="download-link" href="#" download="dental-detection.jpg">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>
+                        Download image
+                    </a>
+                    <button type="button" class="btn btn-ghost" id="new-scan-btn">New scan</button>
+                </div>
+
+                <div class="disclaimer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+                    <span>AI screening aid only, not a medical diagnosis. Please share these results with a qualified dentist.</span>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.SAMPLE_URL = "{{ url_for('static', filename='img/sample.jpg') }}";
+</script>
+<script src="{{ url_for('static', filename='js/scan.js') }}" defer></script>
+{% endblock %}

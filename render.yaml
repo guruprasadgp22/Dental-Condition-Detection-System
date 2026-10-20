@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: dentes
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: RESULT_TTL_HOURS
+        value: "24"
+      # Secrets: set these in the Render dashboard, not in git
+      - key: FIREBASE_API_KEY
+        sync: false
+      - key: FIREBASE_AUTH_DOMAIN
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_STORAGE_BUCKET
+        sync: false
+      - key: FIREBASE_MESSAGING_SENDER_ID
+        sync: false
+      - key: FIREBASE_APP_ID
+        sync: false

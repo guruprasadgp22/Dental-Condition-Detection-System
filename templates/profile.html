@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}My profile{% endblock %}
+{% block auth %}required{% endblock %}
+
+{% block content %}
+<div class="wrap">
+    <div class="page-head">
+        <h1>My profile</h1>
+        <p>Your account details and recent activity.</p>
+    </div>
+
+    <div class="profile-layout">
+        <aside class="card pad profile-card">
+            <div class="avatar avatar-lg" id="p-avatar">?</div>
+            <h2 id="p-name">Loading…</h2>
+            <p class="muted" id="p-email"></p>
+            <div class="profile-badges">
+                <span class="badge unknown" id="p-provider"></span>
+                <span class="badge" id="p-verified" hidden></span>
+            </div>
+            <dl class="profile-meta">
+                <div><dt>Member since</dt><dd id="p-created">—</dd></div>
+                <div><dt>Last sign-in</dt><dd id="p-last">—</dd></div>
+                <div><dt>Scans (last 24 h)</dt><dd id="p-scans">0</dd></div>
+            </dl>
+            <a class="btn btn-primary btn-block" href="/scan">Start a new scan</a>
+            <button type="button" class="btn btn-ghost btn-block" id="signout-btn" style="margin-top:8px;">Sign out</button>
+        </aside>
+
+        <div style="display:grid; gap:20px;">
+            <section class="card pad">
+                <h3 class="panel-title">Basic details</h3>
+                <form id="profile-form" novalidate>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="f-name">Full name</label>
+                            <input id="f-name" autocomplete="name" placeholder="Your name" required>
+                        </div>
+                        <div class="field">
+                            <label for="f-email">Email</label>
+                            <input id="f-email" type="email" disabled>
+                        </div>
+                        <div class="field">
+                            <label for="f-phone">Phone</label>
+                            <input id="f-phone" type="tel" autocomplete="tel" placeholder="10-digit mobile number">
+                        </div>
+                        <div class="field">
+                            <label for="f-dob">Date of birth</label>
+                            <input id="f-dob" type="date">
+                        </div>
+                        <div class="field">
+                            <label for="f-gender">Gender</label>
+                            <select id="f-gender">
+                                <option value="">Prefer not to say</option>
+                                <option>Female</option>
+                                <option>Male</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="f-city">City</label>
+                            <input id="f-city" autocomplete="address-level2" placeholder="Your city">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="f-dentist">My dentist / clinic (optional)</label>
+                        <input id="f-dentist" placeholder="e.g. Dr. Rao, Smile Dental Clinic">
+                    </div>
+
+                    <div id="profile-msg" class="alert" role="status" hidden style="margin-bottom:14px;"></div>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button type="submit" class="btn btn-primary" id="save-btn">Save changes</button>
+                        <button type="button" class="btn btn-ghost" id="reset-form-btn">Discard</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="card pad">
+                <h3 class="panel-title">Security</h3>
+                <div class="security-row">
+                    <div>
+                        <strong>Password</strong>
+                        <p class="muted" id="pw-hint">We'll email you a secure link to set a new password.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline" id="pw-btn">Send reset link</button>
+                </div>
+                <div class="security-row" id="verify-row" hidden>
+                    <div>
+                        <strong>Email verification</strong>
+                        <p class="muted">Confirm that this email address belongs to you.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline" id="verify-btn">Send verification email</button>
+                </div>
+                <div id="security-msg" class="alert" role="status" hidden style="margin-top:14px;"></div>
+            </section>
+
+            <section class="card pad">
+                <h3 class="panel-title">Recent scans</h3>
+                <ul class="history" id="p-history"></ul>
+                <p class="muted" id="p-history-empty" style="margin:0;">No scans in the last 24 hours.</p>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

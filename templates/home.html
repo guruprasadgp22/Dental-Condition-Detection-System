@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="wrap">
+        <div>
+            <span class="eyebrow">AI dental X-ray screening</span>
+            <h1>Spot dental problems on a panoramic X-ray in seconds</h1>
+            <p class="lead">
+                Upload a panoramic X-ray and a YOLOv5 model trained on dental scans marks caries, deep caries,
+                impacted teeth and peripheral lesions. You get a findings summary and a report you can print.
+            </p>
+            <div class="hero-actions">
+                <a class="btn btn-primary btn-lg" href="/scan">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
+                    Start a scan
+                </a>
+                <a class="btn btn-outline btn-lg" href="/conditions">What it detects</a>
+            </div>
+            <div class="hero-stats">
+                <div><b>4</b><span>conditions detected</span></div>
+                <div><b>&lt; 2 s</b><span>typical analysis time</span></div>
+                <div><b>24 h</b><span>results kept, then deleted</span></div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="card">
+                <img src="{{ url_for('static', filename='img/hero.jpg') }}" alt="Panoramic X-ray with detected caries marked by boxes" width="1200" height="554">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="block">
+    <div class="wrap">
+        <div class="section-head">
+            <h2>How it works</h2>
+            <p class="muted">Three steps, with no software to install.</p>
+        </div>
+        <div class="grid-3">
+            <div class="card pad step">
+                <div class="step-num">1</div>
+                <h3>Upload your X-ray</h3>
+                <p>Drag in a JPG or PNG panoramic X-ray, or paste one from the clipboard.</p>
+            </div>
+            <div class="card pad step">
+                <div class="step-num">2</div>
+                <h3>AI analysis</h3>
+                <p>The model finds and outlines possible conditions, each with a confidence score.</p>
+            </div>
+            <div class="card pad step">
+                <div class="step-num">3</div>
+                <h3>Review &amp; share</h3>
+                <p>Explore the findings, download the marked image, or print a PDF report for your dentist.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="block">
+    <div class="wrap">
+        <div class="section-head">
+            <h2>Conditions we detect</h2>
+            <p class="muted">Each condition has its own colour on the X-ray.</p>
+        </div>
+        <div class="grid-4">
+            {% for key, c in conditions.items() %}
+            <article class="card cond-card">
+                <img src="{{ url_for('static', filename='images/' + c.image) }}" alt="{{ c.title }} example" loading="lazy">
+                <div class="body">
+                    <h3><span class="dot {{ c.slug }}"></span>{{ c.title }}</h3>
+                    <p>{{ c.short }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="block">
+    <div class="wrap">
+        <div class="cta">
+            <h2>Ready to check an X-ray?</h2>
+            <p>Sign in and get results in seconds.</p>
+            <a class="btn btn-lg" href="/scan">Start a scan</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

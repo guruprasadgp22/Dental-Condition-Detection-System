@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Not found{% endblock %}
+
+{% block content %}
+<div class="wrap">
+    <div class="empty-state" style="padding:96px 16px;">
+        <h1 style="font-size:2rem;">Page not found</h1>
+        <p>This page doesn't exist, or the report has expired. Results are deleted after 24 hours.</p>
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:20px;">
+            <a class="btn btn-primary" href="/scan">Start a new scan</a>
+            <a class="btn btn-outline" href="/">Go home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

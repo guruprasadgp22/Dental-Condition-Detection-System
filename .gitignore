@@ -1,0 +1,19 @@
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+static/results/*
+!static/results/.gitkeep
+static/uploads/
+old_design/
+others/
+results/
+static/images/*.gif
+static/images/train_*.png
+static/images/result.jpeg
+*.onnx.data
+
+# secrets
+.env
+.env.*
+!.env.example
